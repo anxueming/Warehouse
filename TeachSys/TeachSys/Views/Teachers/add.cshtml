@@ -1,0 +1,36 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/jquery-easyui-1.5.1/jquery.min.js"></script>
+    <title>AddTeacher</title>
+</head>
+<body>
+    <div>
+        <form id="teachers_add">
+            教工姓名：<input class="easyui-textbox" id="add_teacher_name" data-options="prompt:'请输入姓名'" name="Name" /><br />
+            教工编号：<input class="easyui-textbox " id="add_teacher_teacherno" data-options="prompt:'请输入教工号'" name="TeacherNO" /><br />
+            允许登录：<input type="checkbox" id="add_teacher_isLogin" name="IsLogin" value="1" /><br />
+        </form>
+    </div>
+    <script>
+        $(function () {
+            $(function () {
+                $.get("/Departments/GetDepartments", function (data) {
+                    $(data).each(function (index, department) {
+                        $("#add_teacher_depname").append("<option value=" + department.ID + ">" + department.Name + "</option>")
+                    })
+
+                }, "json");
+            })
+
+        })
+
+    </script>
+</body>
+</html>

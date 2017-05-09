@@ -1,0 +1,226 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Scripts/addstyle.css" rel="stylesheet" />
+    <link href="~/Scripts/easyUI/themes/icon.css" rel="stylesheet" />
+    <link href="~/Scripts/easyUI/themes/material/easyui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-2.2.1.js"></script>
+    <script src="~/Scripts/easyUI/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/easyUI/locale/easyui-lang-zh_CN.js"></script>
+    <title>Index</title>
+    <script>
+        
+       
+        $(function () {
+            
+            $("#classes-major").combobox({
+                width: 180,
+                url: '/Majors/getMajorsByDepartmentID?deptID=1',
+                valueField: 'ID',
+                textField: 'Name',
+                onSelect: function (record) {
+                    $("#dg-classes").datagrid("reload");
+                    
+                }
+            });
+            $("#classes-major").combobox("select", "1");
+            $("#dlg-class-delete").dialog({ closed: true });
+            $("#dg-classes").datagrid({
+                title: '班级管理-----',
+                url: '/Classes/getClasseslistByMajorIdWithDirector',
+                queryParams: {
+                    majorID:$("#classes-major").combobox("getValue")
+                },
+                singleSelect: true,
+                rownumbers: true,
+                width:400,
+                columns: [[
+                    { field: 'Name', title: '班级名称', width: 100 },
+                    { field: 'TeacherName', title: '班主任', width: 100 },
+                    { field: 'TeacherNo', title:'教工号', width:100}
+                ]],
+                toolbar: [{
+                    text: '添加',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        $("#dlg-class-add").dialog({
+                            title: '添加----',
+                            iconCls: 'icon-add',
+                            width: 300,
+                            height: 200,
+                            closed: false,
+                            modal: true,
+                            href: '/classes/add',
+                            buttons: [{
+                                text: '保存',
+                                iconCls: 'icon-save',
+                                handler: function () {
+                                    var c=$("#class-add-form").serialize();
+                                    $.get("/classes/addclasses", c, function (data) {
+                                        if (data == "ok")
+                                        {
+                                            $.messager.show({
+                                                title: 'TTSP',
+                                                msg: '编辑成功！',
+                                                showType: 'show'
+                                            });
+                                            $("#dg-classes").datagrid("reload");
+                                        }
+                                    }, "text")
+                                }
+                            }, {
+                                text: '取消',
+                                iconCls: 'icon-no',
+                                handler: function () {
+                                    $("#dlg-class-add").dialog("close");
+                                }
+                            }]
+                        });
+                    }
+                }, {
+                    text: '编辑',
+                    iconCls: 'icon-edit',
+                    handler: function () {
+                        var row = $("#dg-classes").datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert("提示...", "请选择行!", "warning");
+                            return;
+                        }
+                        $("#dlg-class-edit").dialog({
+                            title: '编辑----',
+                            iconCls: 'icon-edit',
+                            width: 300,
+                            height: 200,
+                            closed: false,
+                            modal: true,
+                            href: '/Classes/edit',
+                            buttons: [{
+                                text: '修改',
+                                iconCls: 'icon-save',
+                                handler: function () {
+                                    var ID = $("#dg-classes").datagrid("getSelected").ID
+                                    $.get("/classes/editclasses", { ID: ID, Name: $("#class-edit-classname").val(), majID: $("#class-edit-majorname").val() }, function (data) {
+                                        if (data == "OK") {
+                                            $("#dg-classes").datagrid("reload");
+                                            $.messager.show({
+                                                title: 'TTSP',
+                                                msg: '编辑成功！',
+                                                showType: 'show'
+                                            });
+                                            $("#dlg-class-edit").dialog("close");
+                                            $("#class-edit-classname").val("");
+                                        }
+                                        else
+                                            $.messager.show({
+                                                title: 'TTSP',
+                                                msg: '编辑失败！',
+                                                showType: 'show'
+                                            });
+                                    }, "text")
+                                }
+                            }, {
+                                text: '取消',
+                                iconCls: 'icon-no',
+                                handler: function () {
+                                    $("#dlg_add").dialog("close");
+                                }
+                            }]
+                        });
+                    }
+                }, '-', {
+                    text: '删除',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        var row = $("#dg-classes").datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert("提示...", "请选择行!", "warning");
+                            return;
+                        }
+                        $("#dlg-class-delete").dialog({
+                            title: '删除----',
+                            iconCls: 'icon-remove',
+                            width: 300,
+                            height: 200,
+                            closed: false,
+                            modal: true,
+                            buttons: [{
+                                text: '删除',
+                                iconCls: 'icon-save',
+                                handler: function () {
+                                    $.get("/classes/deleteClasses", { ID: $("#dg-classes").datagrid("getSelected").ID }, function (data) {
+                                        if (data == "OK") {
+                                            $("#dg-classes").datagrid("reload");
+                                            $("#dlg-class-delete").dialog("close");
+                                            $.messager.show({
+                                                title: 'TTSP',
+                                                msg: '删除成功！',
+                                                showType: 'show'
+                                            });
+                                        }
+                                        else
+                                            $.messager.show({
+                                                title: 'TTSP',
+                                                msg: '删除失败！',
+                                                showType: 'show'
+                                            });
+                                    }, "text")
+                                }
+                            }, {
+                                text: '取消',
+                                iconCls: 'icon-no',
+                                handler: function () {
+                                    $("#dlg-class-delete").dialog("close");
+                                }
+                            }]
+                        });
+                    }
+                },'-',{
+                text: '密码重置',
+                iconCls: 'icon-lock',
+                handler: function () {
+                     
+                        }
+                                 
+                    
+
+                }]
+          
+       
+            });
+           
+        });
+        function query()
+        {
+            $("#dg-classes").datagrid('load', {
+                majorID: $("#classes-major").combobox("getValue")
+            })
+        }
+    </script>
+</head>
+<body>
+    <div>
+        专业名称:<input id="classes-major" class="easyui-combobox"/>
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="query()">查询</a>
+        <table id="dg-classes"></table>
+    </div>
+    <div id="dlg-class-add"></div>
+    <div id="dlg-class-edit"></div>
+    <div id="dlg-class-delete">
+        确定要删除？？？
+    </div>
+<script>
+    $(function () {
+
+
+    })
+</script>
+
+</body>
+
+</html>

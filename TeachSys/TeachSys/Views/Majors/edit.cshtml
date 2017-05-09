@@ -1,0 +1,18 @@
+﻿@{
+    Layout = null;
+}
+@Model majors
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>edit</title>
+</head>
+<body>
+    <div class="weizhi">
+       <input type="hidden" value="@Model.ID" />
+       <label>专业名称:</label><input id="major_edit_input" class="easyui-textbox" value="@Model.Name" />
+    </div>
+</body>
+</html>

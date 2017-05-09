@@ -1,0 +1,22 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+@Model teacher
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>edit</title>
+</head>
+<body>
+    <div>
+        <form id="teachers_edit">
+            <input type="hidden" name="ID" value="@Model.ID" />
+            <label>教工姓名：</label><input class="easyui-textbox" id="edit_teacher_name" name="Name" value="@Model.Name" /><br />
+            <label>教工编号：</label><input class="easyui-textbox " id="edit_teacher_teacherno" name="TeacherNo" value="@Model.TeacherNo" /><br />
+            <label>允许登录：</label><input type="checkbox" id="edit_teacher_isLogin" name="IsLogin" value="@Model.IsLogin" /><br />
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+@Model Department
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EditIndex</title>
+</head>
+<body>
+        <div class="weizhi">
+            <input type="hidden" value="@Model.ID"/>
+            <label>系部名称:</label><input id="Name" type="text" autofocus="autofocus" value="@Model.Name" /><br /> 
+        </div>
+</body>
+</html>
